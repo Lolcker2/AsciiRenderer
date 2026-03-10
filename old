@@ -1,0 +1,93 @@
+from pygame import *
+
+
+class Text:
+    def __init__(self, text, size, clr, x, y, align='nw', font_='hack'):
+        self.text = text
+        self.size = size
+        self.clr = clr
+        self.x = x
+        self.y = y
+        self.align = align
+        self.font = font_
+
+    def draw(self, thescreen):
+        font_name = font.match_font(self.font)
+        fn = font.Font(font_name, self.size)
+        text_surface = fn.render(self.text, True, self.clr)
+        text_rect = text_surface.get_rect()
+        if self.align == "nw":
+            text_rect.topleft = (self.x, self.y)
+        if self.align == "ne":
+            text_rect.topright = (self.x, self.y)
+        if self.align == "sw":
+            text_rect.bottomleft = (self.x, self.y)
+        if self.align == "se":
+            text_rect.bottomright = (self.x, self.y)
+        if self.align == "n":
+            text_rect.midtop = (self.x, self.y)
+        if self.align == "s":
+            text_rect.midbottom = (self.x, self.y)
+        if self.align == "e":
+            text_rect.midright = (self.x, self.y)
+        if self.align == "w":
+            text_rect.midleft = (self.x, self.y)
+        if self.align == "center":
+            text_rect.center = (self.x, self.y)
+        thescreen.blit(text_surface, text_rect)
+
+
+class cgengine:
+    @staticmethod
+    def prosess(matrix):                           # [X]INFO(prosess method):
+        scl = 10                                    # this method will help you handel a large amount of data.
+        finalmatrix = []                             # it will make sure that you'll be able to use any matrix size and
+        for y in range(len(matrix)):                 # it will fit your matrixes to the screen size.
+            tempmatrix = []                          # DEV_TIP:
+            for x in range(len(matrix[0])):          # if you want to use this method I suggest you to use it right
+                for i in range(scl):                 # before the moment of "printing", the data will get its final form
+                    tempmatrix.append(matrix[y][x])  # and that form will be hard to handel. there is another method
+            for j in range(scl):                     # that is called ("finalprinting") and it will use this method and
+                finalmatrix.append(tempmatrix)      # the printing method right after that. I suggest you to use
+        return finalmatrix                         # finalprinting insted but if you need to you can use this method.[X]
+
+    @staticmethod
+    def blend(matrix1, matrix2, pos):
+        finalmatrix = matrix1
+        for y in range(len(matrix2)):
+            for x in range(len(matrix2[0])):
+                finalmatrix[pos[1] + y][pos[0] + x] = matrix2[y][x]
+        return finalmatrix
+
+    @staticmethod
+    def printing(screen, self, printcolor, spacing, size):
+        txtlist = []
+        for line in range(len(self)):
+            for item in range(len(self[line])):
+                if self[line][item] != 0:
+                    txtlist.append(Text(str(self[line][item]), size, printcolor, item * spacing, line * spacing, align='center'))
+        for text in txtlist:
+            text.draw(screen)
+    
+    @staticmethod
+    def finalprinting(matrix, printcolor, spacing, size):
+        var1 = cgengine.prosess(matrix)
+        cgengine.printing(var1, printcolor, spacing, size)
+    
+    @staticmethod
+    def clear(matrix, x1, y1, x2, y2):
+        for y in range(y1, y2 + 1):
+            for x in range(x1, x2 + 1):
+                matrix[y][x] = 0
+        return matrix
+
+    @staticmethod
+    def create(size):
+        finalmatrix = []
+        for y in range(size[1]):
+            temp = []
+            for x in range(size[0]):
+                temp.append(" ")          # space and zero are both count as blank enteties.
+            finalmatrix.append(temp)
+        return finalmatrix
+
